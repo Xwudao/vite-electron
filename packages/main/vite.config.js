@@ -1,9 +1,9 @@
-import {node} from '../../electron-vendors.config.json';
-import {join} from 'path';
+import { node } from '../../electron-vendors.config.json';
+import { join } from 'path';
 import { builtinModules } from 'module';
 
-import {defineConfig} from 'vite';
-import {loadAndSetEnv} from '../../scripts/loadAndSetEnv.mjs';
+import { defineConfig } from 'vite';
+import { loadAndSetEnv } from '../../scripts/loadAndSetEnv.mjs';
 
 const PACKAGE_ROOT = __dirname;
 

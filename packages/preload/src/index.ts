@@ -1,4 +1,5 @@
-import {contextBridge} from 'electron';
+import { ipcRenderer, contextBridge } from 'electron';
+import type { ElectronApi } from '../types/electron-api';
 
 const apiKey = 'electron';
 /**
@@ -6,6 +7,7 @@ const apiKey = 'electron';
  */
 const api: ElectronApi = {
   versions: process.versions,
+  ipcRenderer: ipcRenderer,
 };
 
 if (import.meta.env.MODE !== 'test') {
@@ -17,17 +19,20 @@ if (import.meta.env.MODE !== 'test') {
    */
   contextBridge.exposeInMainWorld(apiKey, api);
 } else {
-
   /**
    * Recursively Object.freeze() on objects and functions
    * @see https://github.com/substack/deep-freeze
    * @param obj Object on which to lock the attributes
    */
-  const deepFreeze = (obj: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+  const deepFreeze = (obj: any) => {
+    // eslint-disable-line @typescript-eslint/no-explicit-any
     if (typeof obj === 'object' && obj !== null) {
       Object.keys(obj).forEach((prop) => {
         const val = obj[prop];
-        if ((typeof val === 'object' || typeof val === 'function') && !Object.isFrozen(val)) {
+        if (
+          (typeof val === 'object' || typeof val === 'function') &&
+          !Object.isFrozen(val)
+        ) {
           deepFreeze(val);
         }
       });
@@ -38,8 +43,12 @@ if (import.meta.env.MODE !== 'test') {
 
   deepFreeze(api);
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   window[apiKey] = api;
 
   // Need for Spectron tests
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   window.electronRequire = require;
 }

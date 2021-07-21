@@ -1,5 +1,5 @@
-const {Application} = require('spectron');
-const {strict: assert} = require('assert');
+const { Application } = require('spectron');
+const { strict: assert } = require('assert');
 
 const app = new Application({
   path: require('electron'),
@@ -7,7 +7,8 @@ const app = new Application({
   args: ['.'],
 });
 
-app.start()
+app
+  .start()
   .then(async () => {
     const isVisible = await app.browserWindow.isVisible();
     assert.ok(isVisible, 'Main window not visible');
@@ -21,7 +22,11 @@ app.start()
   .then(async function () {
     // Get the window content
     const content = await app.client.$('#app');
-    assert.notStrictEqual(await content.getHTML(), '<div id="app"></div>', 'Window content is empty');
+    assert.notStrictEqual(
+      await content.getHTML(),
+      '<div id="app"></div>',
+      'Window content is empty',
+    );
   })
 
   .then(function () {
@@ -39,4 +44,3 @@ app.start()
     }
     process.exit(1);
   });
-
